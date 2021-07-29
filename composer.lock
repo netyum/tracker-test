@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa127ec82420bc3d3358e69b2caa2969",
+    "content-hash": "4d993db1b7c84bd2285344e5e8e3e4d8",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1867,6 +1867,66 @@
             "time": "2021-07-18T06:50:14+00:00"
         },
         {
+            "name": "hyperf/redis",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyperf/redis.git",
+                "reference": "daeb7cd985f02a669a2a7261bd07e5edbe90ccd3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyperf/redis/zipball/daeb7cd985f02a669a2a7261bd07e5edbe90ccd3",
+                "reference": "daeb7cd985f02a669a2a7261bd07e5edbe90ccd3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-redis": "*",
+                "hyperf/contract": "~2.2.0",
+                "hyperf/pool": "~2.2.0",
+                "hyperf/utils": "~2.2.0",
+                "php": ">=7.2",
+                "psr/container": "^1.0|^2.0"
+            },
+            "suggest": {
+                "ext-redis": "Required to use sentinel mode (>=5.2).",
+                "hyperf/di": "Create the RedisPool via dependency injection."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                },
+                "hyperf": {
+                    "config": "Hyperf\\Redis\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hyperf\\Redis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A redis component for hyperf.",
+            "homepage": "https://hyperf.io",
+            "keywords": [
+                "hyperf",
+                "php",
+                "pool",
+                "redis"
+            ],
+            "support": {
+                "docs": "https://hyperf.wiki",
+                "issues": "https://github.com/hyperf/hyperf/issues",
+                "pull-request": "https://github.com/hyperf/hyperf/pulls",
+                "source": "https://github.com/hyperf/hyperf"
+            },
+            "time": "2021-07-18T06:50:14+00:00"
+        },
+        {
             "name": "hyperf/server",
             "version": "v2.2.0",
             "source": {
@@ -2390,16 +2450,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.51.0",
+            "version": "2.51.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "48ebff252df4d3b60ecb8e2583f79dfba6b56bc8"
+                "reference": "8619c299d1e0d4b344e1f98ca07a1ce2cfbf1922"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/48ebff252df4d3b60ecb8e2583f79dfba6b56bc8",
-                "reference": "48ebff252df4d3b60ecb8e2583f79dfba6b56bc8",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/8619c299d1e0d4b344e1f98ca07a1ce2cfbf1922",
+                "reference": "8619c299d1e0d4b344e1f98ca07a1ce2cfbf1922",
                 "shasum": ""
             },
             "require": {
@@ -2480,7 +2540,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-28T08:28:41+00:00"
+            "time": "2021-07-28T13:16:28+00:00"
         },
         {
             "name": "nikic/fast-route",
