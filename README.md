@@ -53,7 +53,7 @@ TRACER_SEND_DELAYED=3
 #### 修改 middlewares.php
 直接使用
 ```php
-\app\Middleware\TraceMiddleware::class,
+\App\Middleware\TraceMiddleware::class,
 ```
 修改自
 ```php
