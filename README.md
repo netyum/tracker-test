@@ -1,36 +1,85 @@
-# Introduction
+# hyperf-tracer-test
 
-This is a skeleton application using the Hyperf framework. This application is meant to be used as a starting place for those looking to get their feet wet with Hyperf Framework.
+## tracer 测试 修改协程支持
 
-# Requirements
+## 修改 
 
-Hyperf has some requirements for the system environment, it can only run under Linux and Mac environment, but due to the development of Docker virtualization technology, Docker for Windows can also be used as the running environment under Windows.
+#### 修改 .env 增加
+```shell
+# tracer 发送延时 ，主要用户是协程 中再调协程，一次请求 tracer收集不完全。 
+TRACER_SEND_DELAYED=3
+```
 
-The various versions of Dockerfile have been prepared for you in the [hyperf/hyperf-docker](https://github.com/hyperf/hyperf-docker) project, or directly based on the already built [hyperf/hyperf](https://hub.docker.com/r/hyperf/hyperf) Image to run.
+#### 修改  vendor/hyperf/tracer/src/SpanStarter.php
+```php
+    protected function startSpan(
+        string $name,
+        array $option = [],
+        string $kind = SPAN_KIND_RPC_SERVER
+    ): Span {
+        if (Coroutine::inCoroutine()) { // 协程内
+            $root = Context::get('tracer.root'); //本协程内取tracer
+            if (!$root instanceof Span) { //如果没有，去父协程内取
+                $root = Context::get('tracer.root', null, Coroutine::parentId());
+                if ($root instanceof Span) { //如果有， 放入本协程
+                    // 这里主要是 协程 内 调 协程  是无序的
+                    Context::set('tracer.root', $root);
+                }
+            }
+        } else {
+            $root = Context::get('tracer.root');
+        }
+```
 
-When you don't want to use Docker as the basis for your running environment, you need to make sure that your operating environment meets the following requirements:  
+#### 修改  vendor/hyperf/tracer/src/SwitchManager.php
+```php
+    public function isEnable(string $identifier): bool
+    {
+        if (! isset($this->config[$identifier])) {
+            return false;
+        }
+        if (Coroutine::inCoroutine()) {
+            $tracerRoot = Context::get('tracer.root');
+            if (!$tracerRoot instanceof Span) {
+                $tracerRoot = Context::get('tracer.root', null, Coroutine::parentId());
+            }
+        } else {
+            $tracerRoot = Context::get('tracer.root');
+        }
+        return $this->config[$identifier] && $tracerRoot instanceof Span;
+    }
+```
 
- - PHP >= 7.3
- - Swoole PHP extension >= 4.5，and Disabled `Short Name`
- - OpenSSL PHP extension
- - JSON PHP extension
- - PDO PHP extension （If you need to use MySQL Client）
- - Redis PHP extension （If you need to use Redis Client）
- - Protobuf PHP extension （If you need to use gRPC Server of Client）
+#### 修改 middlewares.php
+直接使用
+```php
+\app\Middleware\TraceMiddleware::class,
+```
+修改自
+```php
+\Hyperf\Tracer\Middleware\TraceMiddleware::class,
+```
+在defer中，加了sleep做延时
+```php
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        $span = $this->buildSpan($request);
 
-# Installation using Composer
+        defer(function () {
+            try {
+                Coroutine::sleep((float)$this->config->get('opentracing.send_delayed'));
+                $this->tracer->flush();
+            } catch (\Throwable $exception) {
+            }
+        });
+```
 
-The easiest way to create a new Hyperf project is to use Composer. If you don't have it already installed, then please install as per the documentation.
+#### 测试
 
-To create your new Hyperf project:
+```shell
+协程
+http://localhost:9501/co
 
-$ composer create-project hyperf/hyperf-skeleton path/to/install
-
-Once installed, you can run the server immediately using the command below.
-
-$ cd path/to/install
-$ php bin/hyperf.php start
-
-This will start the cli-server on port `9501`, and bind it to all network interfaces. You can then visit the site at `http://localhost:9501/`
-
-which will bring up Hyperf default home page.
+协程 - 协程
+http://localhost:9501/coco
+```

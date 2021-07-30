@@ -17,7 +17,7 @@ use Hyperf\Utils\Exception\ParallelExecutionException;
 use Hyperf\Utils\Parallel;
 use Hyperf\Redis\Redis;
 
-class IndexController extends AbstractController
+class CoController extends AbstractController
 {
     /**
      * @Inject()

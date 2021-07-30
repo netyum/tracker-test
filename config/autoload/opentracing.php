@@ -13,6 +13,7 @@ use Zipkin\Samplers\BinarySampler;
 
 return [
     'default' => env('TRACER_DRIVER', 'zipkin'),
+    'send_delayed' => (float)env('TRACER_SEND_DELAYED', 0.05),
     'enable' => [
         'guzzle' => env('TRACER_ENABLE_GUZZLE', false),
         'redis' => env('TRACER_ENABLE_REDIS', false),
